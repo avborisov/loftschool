@@ -59,13 +59,9 @@ function reduce(array, fn, initial) {
  */
 function upperProps(obj) {
     var result = [];
-    var i = 0;
 
-    for (var key in obj) {
-        if (obj.hasOwnProperty(key)) {
-            result[i] = key.toUpperCase();
-            i++;
-        }        
+    for (var key of Object.keys(obj)) {        
+        result.push(key.toUpperCase());   
     }
 
     return result;
@@ -78,26 +74,25 @@ function upperProps(obj) {
  Посмотрите как работает slice и повторите это поведение для массива, который будет передан в параметре array
  */
 function slice(array, from = 0, to = array.length) {
-    from = normalizeIndex(from, array.length);
-    to = normalizeIndex(to, array.length);
-    
-    var result = [];
-    var k = 0;
 
-    for (let i = from; i < to; i++) {
-        result[k] = array[i];
-        k++;
+    if (from < 0) {
+        from = -from > array.length ? 0 : array.length + from;        
+    }
+
+    if (to < 0) {
+        to = -to > array.length ? 0 : array.length + to;        
+    }
+
+    var result = [];
+
+    for (let i = from; i < to; i++) {        
+        if (i >= array.length) { 
+            break;
+        }
+        result.push(array[i]);
     }
     
     return result;
-}
-
-function normalizeIndex(index, maxIndex) {
-    if (index < 0) {
-        index = -index > maxIndex ? 0 : maxIndex + index;
-    }
-
-    return index > maxIndex ? maxIndex : index;
 }
 
 /*
