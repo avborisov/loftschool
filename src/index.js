@@ -17,6 +17,23 @@
    isAllTrue([100, 2, 3, 4, 5], n => n < 10) // вернет false
  */
 function isAllTrue(array, fn) {
+    if (!(array instanceof Array) || array.length == 0) {
+        throw new Error('empty array');
+    }
+    if (!(fn instanceof Function)) {
+        throw new Error('fn is not a function');
+    }
+
+    // return array.every(fn); - is fast way, but it not allowed
+    var result = true;
+
+    for (var element of array) {
+        if (!fn(element)) {
+            result = false;
+        }
+    }
+
+    return result;
 }
 
 /*
@@ -36,6 +53,23 @@ function isAllTrue(array, fn) {
    isSomeTrue([1, 2, 3, 4, 5], n => n > 20) // вернет false
  */
 function isSomeTrue(array, fn) {
+    if (!(array instanceof Array) || array.length == 0) {
+        throw new Error('empty array');
+    }
+    if (!(fn instanceof Function)) {
+        throw new Error('fn is not a function');
+    }
+
+    // return array.some(fn); - is fast way, but it not allowed
+    var result = false;
+
+    for (var element of array) {
+        if (fn(element)) {
+            result = true;
+        }
+    }
+
+    return result;
 }
 
 /*
@@ -49,7 +83,23 @@ function isSomeTrue(array, fn) {
  3.3: Необходимо выбрасывать исключение в случаях:
    - fn не является функцией (с текстом "fn is not a function")
  */
-function returnBadArguments(fn) {
+function returnBadArguments(fn, ...args) {
+    if (!(fn instanceof Function)) {
+        throw new Error('fn is not a function');
+    }
+
+    // return array.some(fn); - is fast way, but it not allowed
+    var errors = [];
+
+    for (var element of args) {
+        try {
+            fn(element);
+        } catch (e) {
+            errors.push(element);
+        }
+    }
+
+    return errors;
 }
 
 /*
@@ -69,7 +119,52 @@ function returnBadArguments(fn) {
    - number не является числом (с текстом "number is not a number")
    - какой-либо из аргументов div является нулем (с текстом "division by 0")
  */
-function calculator() {
+function calculator(number = 0) {
+    if (!isFinite(number)) {
+        throw new Error('number is not a number');
+    }
+
+    return {
+        sum: function() {
+            var result = number;
+
+            for (var element of arguments) {
+                result += element;
+            }
+
+            return result;
+        },
+        dif: function() {
+            var result = number;
+
+            for (var element of arguments) {
+                result -= element;
+            }
+
+            return result;
+        },
+        div: function() {
+            var result = number;
+
+            for (var element of arguments) {
+                if (element == 0) {
+                    throw new Error('division by 0');
+                }
+                result /= element;
+            }
+
+            return result;
+        },
+        mul: function() {
+            var result = number;
+
+            for (var element of arguments) {
+                result *= element;
+            }
+
+            return result;
+        }
+    }
 }
 
 /* При решении задач, пострайтесь использовать отладчик */
