@@ -52,9 +52,9 @@ function prepend(what, where) {
 function findAllPSiblings(where) {
     let result = [];
 
-    for (const node of where.childNodes) {
-        if (node.nextElementSibling && node.nextElementSibling.tagName === 'P') {
-            result.push(node);
+    for (const child of where.childNodes) {
+        if (child.nextElementSibling && child.nextElementSibling.tagName === 'P') {
+            result.push(child);
         }
     }
 
@@ -81,7 +81,7 @@ function findAllPSiblings(where) {
 function findError(where) {
     var result = [];
 
-    for (var child of where.children) {
+    for (const child of where.children) {
         result.push(child.innerText);
     }
 
@@ -101,9 +101,9 @@ function findError(where) {
    должно быть преобразовано в <div></div><p></p>
  */
 function deleteTextNodes(where) {
-    for (var node of where.childNodes) {
-        if (node.nodeType === 3) {
-            where.removeChild(node);
+    for (const child of where.childNodes) {
+        if (child.nodeType == Node.TEXT_NODE) {
+            where.removeChild(child);
         }
     }
 }
@@ -124,7 +124,7 @@ function deleteTextNodesRecursive(where) {
     let childNodes = where.childNodes;
 
     for (let i = 0; i < childNodes.length; i++) {
-        if (childNodes[i].nodeType === 3) {
+        if (childNodes[i].nodeType == Node.TEXT_NODE) {
             where.removeChild(childNodes[i]);
             i--;
         } else {
@@ -162,16 +162,16 @@ function collectDOMStat(root, result) {
         };
     }
 
-    for (var node of root.childNodes) {
-        if (node.nodeType === 3) {
+    for (const child of root.childNodes) {
+        if (child.nodeType == Node.TEXT_NODE) {
             result.texts++;
         } else {
-            if (result.tags[node.tagName] == undefined) {
-                result.tags[node.tagName] = 0;
+            if (result.tags[child.tagName] == undefined) {
+                result.tags[child.tagName] = 0;
             }
-            result.tags[node.tagName]++;
+            result.tags[child.tagName]++;
 
-            let classes = node.classList;
+            let classes = child.classList;
 
             classes.forEach(
                 function(className) {
@@ -183,7 +183,7 @@ function collectDOMStat(root, result) {
             );
 
         }
-        collectDOMStat(node, result);
+        collectDOMStat(child, result);
     }
 
     return result;
@@ -223,7 +223,7 @@ function collectDOMStat(root, result) {
  */
 function observeChildNodes(where, fn) {
     var observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
+        for (const mutation of mutations) {
             if (mutation.addedNodes.length > 0) {
                 fn({
                     type: 'insert',
@@ -236,7 +236,7 @@ function observeChildNodes(where, fn) {
                     nodes: Object.values(mutation.removedNodes)
                 })
             }
-        });
+        }
     });
 
     var config = { childList: true, subtree: true };
