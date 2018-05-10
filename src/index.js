@@ -173,14 +173,12 @@ function collectDOMStat(root, result) {
 
             let classes = child.classList;
 
-            classes.forEach(
-                function(className) {
-                    if (result.classes[className] == undefined) {
-                        result.classes[className] = 0;
-                    }
-                    result.classes[className]++;
+            for (const className of classes) {            
+                if (result.classes[className] == undefined) {
+                    result.classes[className] = 0;
                 }
-            );
+                result.classes[className]++;
+            }
 
         }
         collectDOMStat(child, result);
