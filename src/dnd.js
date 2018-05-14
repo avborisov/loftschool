@@ -27,8 +27,30 @@ const homeworkContainer = document.querySelector('#homework-container');
    homeworkContainer.appendChild(newDiv);
  */
 function createDiv() {
+    const newDiv = document.createElement('div');
+
+    newDiv.className = 'draggable-div';
+    newDiv.style.width = getRandomInt(10, 500) + 'px';
+    newDiv.style.height = getRandomInt(10, 500) + 'px';
+    newDiv.style.backgroundColor = getRandomRGBColor();
+    newDiv.style.position = 'absolute';
+    newDiv.style.left = getRandomInt(0, 500) + 'px';
+    newDiv.style.top = getRandomInt(0, 500) + 'px';
+
+    return newDiv;
 }
 
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getRandomRGBColor() {
+    var r = getRandomInt(0, 255);
+    var g = getRandomInt(0, 255);
+    var b = getRandomInt(0, 255);
+
+    return 'rgb(' + r + ',' + g + ',' + b + ')';
+}
 /*
  Функция должна добавлять обработчики событий для перетаскивания элемента при помощи drag and drop
 
@@ -38,6 +60,47 @@ function createDiv() {
    addListeners(newDiv);
  */
 function addListeners(target) {
+    target.onmousedown = function(e) {
+
+        var coords = getCoords(target);
+        var shiftX = e.pageX - coords.left;
+        var shiftY = e.pageY - coords.top;
+      
+        target.style.position = 'absolute';
+        document.body.appendChild(target);
+        moveAt(e);
+      
+        target.style.zIndex = 1000; // над другими элементами
+      
+        function moveAt(e) {
+            target.style.left = e.pageX - shiftX + 'px';
+            target.style.top = e.pageY - shiftY + 'px';
+        }
+      
+        document.onmousemove = function(e) {
+            moveAt(e);
+        };
+      
+        target.onmouseup = function() {
+            document.onmousemove = null;
+            target.onmouseup = null;
+        };
+      
+    }
+      
+    target.ondragstart = function() {
+        return false;
+    };
+      
+    function getCoords(target) {
+        var box = target.getBoundingClientRect();
+        
+        return {
+            top: box.top + pageYOffset,
+            left: box.left + pageXOffset
+        };
+    }
+
 }
 
 let addDivButton = homeworkContainer.querySelector('#addDiv');
