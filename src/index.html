@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Promise test</title>
+    <style>
+        #homework-container {
+            width: 100%;
+            height: 100%;
+            margin: 0em;
+            left: 0em;
+            top: 0em;
+            position: fixed;
+        }
+
+        #error {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="homework-container">
+    <div id="loading-block">Загрузка...</div>
+    <div id="filter-block" style="display: none;">
+        <input type="text" placeholder="название города" id="filter-input">
+
+        <div id="filter-result"></div>
+    </div>
+    <div id="error">
+        <div>Не удалось загрузить города</div>
+        <input type="button" id="reload-input" value="Повторить">
+    </div>
+</div>
+<script src="./towns.js"></script>
+</body>
+</html>
