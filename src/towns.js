@@ -30,8 +30,6 @@
  */
 const homeworkContainer = document.querySelector('#homework-container');
 
-var towns;
-
 /*
  Функция должна вернуть Promise, который должен быть разрешен с массивом городов в качестве значения
 
@@ -40,7 +38,7 @@ var towns;
  */
 function loadTowns() {
     const townsURL = 'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json';
-    
+
     hideAllElements();
     loadingBlock.style.display = 'block';
 
@@ -113,7 +111,7 @@ filterInput.addEventListener('keyup', function() {
         filterResult.removeChild(filterResult.firstChild);
     }
 
-    towns.then(function(result) {
+    loadTowns().then(function(result) {
         for (const town of result) {
             if (filterInput.value.length > 0 && isMatching(town.name, filterInput.value)) {
                 let innerDiv = document.createElement('div');
@@ -130,10 +128,8 @@ reloadBtn.addEventListener('click', function() {
     loadTowns();
 });
 
-/**
+
 export {
     loadTowns,
     isMatching
 };
-*/
-
