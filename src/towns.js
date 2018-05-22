@@ -30,6 +30,8 @@
  */
 const homeworkContainer = document.querySelector('#homework-container');
 
+var towns;
+
 /*
  Функция должна вернуть Promise, который должен быть разрешен с массивом городов в качестве значения
 
@@ -38,17 +40,43 @@ const homeworkContainer = document.querySelector('#homework-container');
  */
 function loadTowns() {
     const townsURL = 'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json';
+    
+    hideAllElements();
+    loadingBlock.style.display = 'block';
 
-    fetch(townsURL).then(function(response) {
-        if (response.status !== 200) {
-            // TODO: вывод блока error
+    return fetch(townsURL).then(function(response) {
+        if (response.status !== 200) {           
+            hideAllElements();
+            errorBlock.style.display = 'block';
+            
             return;
         }
 
         return response.json().then(function(data) {
-            return data;
+            hideAllElements();
+            filterBlock.style.display = 'block';
+
+            return data.sort(function(a, b) {
+                a = a.name.toLowerCase();
+                b = b.name.toLowerCase();
+                let result = 0;
+
+                if (a < b) {
+                    result = -1;
+                } else if (a > b) {
+                    result = 1;
+                }
+
+                return result;
+            });
         });
     });
+}
+
+function hideAllElements() {
+    loadingBlock.style.display = 'none';
+    filterBlock.style.display = 'none';
+    errorBlock.style.display = 'none';
 }
 
 /*
@@ -74,13 +102,38 @@ const filterBlock = homeworkContainer.querySelector('#filter-block');
 const filterInput = homeworkContainer.querySelector('#filter-input');
 /* Блок с результатами поиска */
 const filterResult = homeworkContainer.querySelector('#filter-result');
+/* Блок с ошибкой и кнопкой перезагрузки */
+const errorBlock = homeworkContainer.querySelector('#error-block');
+/* Кнопка перезагрузки данных */
+const reloadBtn = homeworkContainer.querySelector('#reload-input');
 
 filterInput.addEventListener('keyup', function() {
     // это обработчик нажатия кливиш в текстовом поле
+    while (filterResult.hasChildNodes()) {
+        filterResult.removeChild(filterResult.firstChild);
+    }
+
+    towns.then(function(result) {
+        for (const town of result) {
+            if (filterInput.value.length > 0 && isMatching(town.name, filterInput.value)) {
+                let innerDiv = document.createElement('div');
+
+                innerDiv.textContent = town.name;
+                filterResult.appendChild(innerDiv);
+            }
+        }  
+    });
+    
 });
 
+reloadBtn.addEventListener('click', function() {
+    loadTowns();
+});
 
+/**
 export {
     loadTowns,
     isMatching
 };
+*/
+
