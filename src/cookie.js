@@ -59,7 +59,7 @@ function isMatching(full, chunk) {
 }
 
 function reloadTable() {
-    cookies = getCookies();
+    cookies = getFilteredCookies();
     clearTable();
 
     // eslint-disable-next-line guard-for-in
@@ -68,10 +68,9 @@ function reloadTable() {
         const tdName = document.createElement('td');
         const tdValue = document.createElement('td');
         const tdDelete = document.createElement('td');
-        const deleteButton = document.createElement('input');
+        const deleteButton = document.createElement('button');
 
-        deleteButton.type = 'button';
-        deleteButton.value = 'Delete';
+        deleteButton.innerText = 'Delete';
         deleteButton.addEventListener('click', function() {
             deleteCookie(cookieName);
             reloadTable();
@@ -98,20 +97,31 @@ function clearTable() {
     }
 }
 
-function getCookies() {
-    const pairs = document.cookie.split(';');
+function getFilteredCookies() {
+    const cookies = getCookies();
+    const filtered = {};
     const filterValue = filterNameInput.value;
 
-    const cookies = {};
-
-    for (let i=0; i < pairs.length; i++) {
-        let pair = pairs[i].split('=');
-        let name = (pair[0]+'').trim();
-
-        if (filterValue.length == 0 || (filterValue.length > 0 && isMatching(name, filterValue))) {
-            cookies[name] = unescape(pair[1]);
+    // eslint-disable-next-line guard-for-in
+    for (let cookieName in cookies) {
+        if (filterValue.length == 0) {
+            filtered[cookieName] = cookies[cookieName];
+        } else if (isMatching(cookieName, filterValue) || isMatching(cookies[cookieName], filterValue)) {
+            filtered[cookieName] = cookies[cookieName];
         }
     }
 
-    return cookies;
+    return filtered;
+}
+
+function getCookies() {
+    return document.cookie
+        .split('; ')
+        .filter(Boolean)
+        .map(cookie => cookie.match(/^([^=]+)=(.+)/))
+        .reduce((obj, [, name, value]) => {
+            obj[name] = value;
+
+            return obj;
+        }, {});
 }
