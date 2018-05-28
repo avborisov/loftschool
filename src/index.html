@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Cookies test</title>
+    <style>
+        #homework-container {
+            width: 100%;
+            height: 100%;
+            margin: 0em;
+            left: 0em;
+            top: 0em;
+            position: fixed;
+        }
+        #cookie-form,
+        #cookie-table,
+        #cookie-filter {
+            margin-top: 20px;
+            margin-left: 20px;
+        }
+        #cookie-form > div {
+            margin-bottom: 10px;
+        }
+        #cookie-form > div > #add-button {
+            margin-left: 155px;
+        }
+    </style>
+</head>
+<body>
+<div id="homework-container">
+    <div id="cookie-filter">
+        <label for="filter-name-input">Cookie filter:</label>
+        <input type="text" id="filter-name-input" />
+    </div>
+    <div id="cookie-table">
+        <table id="list-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Value</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div id="cookie-form">
+        <div>
+            <label for="add-name-input">Cookie name:</label>
+            <input type="text" id="add-name-input" />
+        </div>
+        <div>
+            <label for="add-value-input">Cookie value:</label>
+            <input type="text" id="add-value-input" />
+        </div>
+        <div>
+            <input type="button" id="add-button" value="Add"/>
+        </div>
+    </div>
+</div>
+<script src="./cookie.js"></script>
+<script>
+    reloadTable();
+</script>
+</body>
+</html>

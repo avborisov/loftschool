@@ -42,11 +42,76 @@ const addValueInput = homeworkContainer.querySelector('#add-value-input');
 const addButton = homeworkContainer.querySelector('#add-button');
 // таблица со списком cookie
 const listTable = homeworkContainer.querySelector('#list-table tbody');
+// куки с учетом фильтра
+var cookies = getCookies();
 
 filterNameInput.addEventListener('keyup', function() {
-    // здесь можно обработать нажатия на клавиши внутри текстового поля для фильтрации cookie
+    reloadTable();
 });
 
 addButton.addEventListener('click', () => {
-    // здесь можно обработать нажатие на кнопку "добавить cookie"
+    document.cookie = `${addNameInput.value}=${addValueInput.value}`;
+    reloadTable();
 });
+
+function isMatching(full, chunk) {
+    return full.toLowerCase().includes(chunk.toLowerCase());
+}
+
+function reloadTable() {
+    cookies = getCookies();
+    clearTable();
+
+    // eslint-disable-next-line guard-for-in
+    for (let cookieName in cookies) {
+        const tr = document.createElement('tr');
+        const tdName = document.createElement('td');
+        const tdValue = document.createElement('td');
+        const tdDelete = document.createElement('td');
+        const deleteButton = document.createElement('input');
+
+        deleteButton.type = 'button';
+        deleteButton.value = 'Delete';
+        deleteButton.addEventListener('click', function() {
+            deleteCookie(cookieName);
+            reloadTable();
+        });
+
+        tdDelete.appendChild(deleteButton);
+        tdName.appendChild(document.createTextNode(cookieName));
+        tdValue.appendChild(document.createTextNode(cookies[cookieName]));
+        tr.appendChild(tdName);
+        tr.appendChild(tdValue);
+        tr.appendChild(tdDelete);
+
+        listTable.appendChild(tr);
+    }
+}
+
+function deleteCookie(name) {
+    document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
+function clearTable() {
+    while (listTable.rows.length>0) {
+        listTable.deleteRow(0);
+    }
+}
+
+function getCookies() {
+    const pairs = document.cookie.split(';');
+    const filterValue = filterNameInput.value;
+
+    const cookies = {};
+
+    for (let i=0; i < pairs.length; i++) {
+        let pair = pairs[i].split('=');
+        let name = (pair[0]+'').trim();
+
+        if (filterValue.length == 0 || (filterValue.length > 0 && isMatching(name, filterValue))) {
+            cookies[name] = unescape(pair[1]);
+        }
+    }
+
+    return cookies;
+}
