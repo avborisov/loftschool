@@ -14,12 +14,7 @@ rules.push({
 });
 
 module.exports = {
-    entry: {
-        cookie: './src/cookie.js'
-    },
-    devServer: {
-        index: 'cookie.html'
-    },
+    entry: './src/index.js',
     output: {
         filename: '[name].[hash].js',
         path: path.resolve('dist')
@@ -36,10 +31,8 @@ module.exports = {
         }),
         new ExtractTextPlugin('styles.css'),
         new HtmlPlugin({
-            title: 'Cookies',
-            template: 'cookie.hbs',
-            filename: 'cookie.html',
-            chunks: ['cookie']
+            title: 'Loft School sample project',
+            template: 'index.hbs'
         }),
         new CleanWebpackPlugin(['dist'])
     ]
